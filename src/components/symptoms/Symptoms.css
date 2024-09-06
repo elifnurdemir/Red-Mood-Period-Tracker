@@ -1,0 +1,76 @@
+/*{outline: 1px solid red;}*/
+.symptoms-container {
+  background-color: #fff7f7;
+  padding: 20px 100px;
+  border-radius: 8px;
+  width: 50%;
+  margin: 0 auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
+.symptoms-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.symptoms {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 sütunlu grid */
+  gap: 20px; /* Hücreler arasındaki boşluk */
+}
+
+.symptom-option {
+  border-radius: 20px;
+  border: 3px solid #f76c82; /* Ana renk */
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  color: #f76c82; /* Ana renk */
+  gap: 20px;
+  font-weight: 600;
+  font-size: 1.2em;
+  text-align: center;
+  background-color: #fff; /* Arka plan rengi */
+  transition: .2s;
+}
+
+.symptom-option:hover {
+  background-color: #f76c82; /* Hover arka plan rengi */
+  color: #fff; /* Hover metin rengi */
+  border: 3px solid #f76c82; /* Hover sınır rengi */
+}
+.symptom-option:active {
+  background-color: #d6354d; /* Tıklama arka plan rengi (daha koyu bir ton) */
+  color: #fff; /* Tıklama metin rengi */
+  border: 3px solid #d6354d; /* Tıklama sınır rengi (daha koyu bir ton) */
+}
+.symptom-option:hover img {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+    hue-rotate(352deg) brightness(102%) contrast(102%);
+}
+.symptom-option img {
+  height: 96px;
+  width: 96px;
+  filter: brightness(0) saturate(100%) invert(62%) sepia(87%) saturate(2015%)
+    hue-rotate(308deg) brightness(97%) contrast(101%);
+}
+
+.symptom-option.checked {
+  background-color: #e14d62;
+  border: 3px solid #e14d62; /* Tıklama sınır rengi (daha koyu bir ton) */
+  color: #fff;
+
+}
+.symptom-option.checked img {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+    hue-rotate(352deg) brightness(102%) contrast(102%);
+  }
+  .symptom-option.checked:active {
+    background-color: #d6354d; /* Tıklama arka plan rengi (daha koyu bir ton) */
+    color: #fff; /* Tıklama metin rengi */
+    border: 3px solid #d6354d; /* Tıklama sınır rengi (daha koyu bir ton) */
+  }

@@ -1,0 +1,28 @@
+.calendar-swiper-container {
+    width: calc(100% - 40px);
+    height: 100%;
+    padding: 20px;
+  }
+  
+  .calendar-slide {
+    border: 3px solid #F76C82;
+    color: #F76C82;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    user-select: none;
+    cursor: pointer;
+  }
+  .calendar-slide.today{
+    background-color: #F76C82;
+    color: #fff;
+    border: 3px solid transparent;
+  }
+
+  
