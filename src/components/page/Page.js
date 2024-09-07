@@ -10,99 +10,7 @@ import CalendarSwiperContainer from "./CalendarSwiperContainer.js";
 
 import Symptoms from "../symptoms/Symptoms.js";
 const Page = () => {
-  const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [newEvent, setNewEvent] = useState({
-    title: "",
-    start: new Date(),
-    end: new Date(),
-  });
-
-  const swiperRef = useRef(null);
-
-  const chartData = [
-    { keyword: "Part 1", value: 6, empty: false, color: "#F2536F" },
-    { keyword: "Spacer 1", value: 3, empty: true, color: "transparent" },
-    { keyword: "Part 2", value: 8, empty: false, color: "#F3C6DE" },
-    { keyword: "Spacer 2", value: 4, empty: true, color: "transparent" },
-    {
-      keyword: "Allah Belani Versin Mert Part",
-      value: 7,
-      empty: false,
-      color: "#F0A19E",
-    },
-    { keyword: "Spacer 3", value: 2, empty: true, color: "transparent" },
-  ];
-
-  const partValue = 6; // Part verilerinin değeri
-  const spacerValue = 10; // Spacer verilerinin değeri
-  const partColor = "#36A2EB"; // Part verilerinin rengi
-  const spacerColor = "transparent"; // Spacer verilerinin rengi
-
-  const chartDataInner = Array(56) // 16 veri, her biri Part veya Spacer olacak
-    .fill(null)
-    .map((_, i) => {
-      if (i % 2 === 0) {
-        // Part verileri
-        return {
-          keyword: `Part ${i / 2 + 1}`,
-          value: partValue,
-          empty: false,
-          color: "#444",
-        };
-      } else {
-        // Spacer verileri
-        return {
-          keyword: `Spacer ${Math.floor(i / 2) + 1}`,
-          value: spacerValue,
-          empty: true,
-          color: "transparent",
-        };
-      }
-    });
-
-  const handleAddEvent = () => {
-    setEvents([...events, newEvent]);
-    setNewEvent({ title: "", start: new Date(), end: new Date() });
-    setShowModal(false);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewEvent({
-      ...newEvent,
-      [name]: value,
-    });
-  };
-
-  const handleDateChange = (date, field) => {
-    setNewEvent({
-      ...newEvent,
-      [field]: date,
-    });
-  };
-
-  const handleDateClick = (info) => {
-    const title = prompt("Etkinlik başlığını girin:");
-    if (title) {
-      setEvents([...events, { title, date: info.dateStr }]);
-    }
-  };
-
-  const getCurrentDateInfo = () => {
-    const today = new Date();
-    const options = { weekday: "long", day: "numeric", month: "long" };
-    return today.toLocaleDateString("tr-TR", options);
-  };
-
-  const days = Array.from({ length: 30 }, (_, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() + index);
-    return date.toLocaleDateString("tr-TR", {
-      weekday: "short",
-      day: "numeric",
-    });
-  });
 
   return (
     <div className="dashboard-container">
@@ -145,9 +53,15 @@ const Page = () => {
               </div>
             </div>
           </SwiperSlide>
-          <SwiperSlide>
-          <Symptoms/>
-
+          <SwiperSlide
+            style={{
+              height: "839px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Symptoms />
           </SwiperSlide>
         </Swiper>
       </div>
