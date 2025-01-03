@@ -47,7 +47,7 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
       setter(null);
 
   return (
-    <AppBar position="relative" sx={{ bgcolor: "#b71c1c", mt: 0 }}>
+    <AppBar position="relative" sx={{ bgcolor: "primary", mt: 0 }}>
       <Container>
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
