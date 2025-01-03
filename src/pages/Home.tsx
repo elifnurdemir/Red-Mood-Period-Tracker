@@ -4,7 +4,7 @@ import { Box, Typography, Stack } from "@mui/material";
 import { PeriodForm } from "../components/periodForm";
 
 const Home = () => (
-  <Stack p={3} alignItems={"center"}>
+  <Stack alignItems={"center"}>
     <Typography variant="h4" textAlign="center" gutterBottom>
       Regl Takip Sistemi
     </Typography>

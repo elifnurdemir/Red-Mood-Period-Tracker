@@ -23,3 +23,5 @@ function App() {
 }
 
 export default App;
+
+//TODO moda göre müzik seçebildiğimiz bir alan yapalım 4 bölmeli olsun yuvarlak disk şeklinde
