@@ -2,9 +2,10 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import { format } from "date-fns";
 import "react-calendar/dist/Calendar.css";
+import { Box, Stack } from "@mui/material";
+
 interface CustomDate {
   date: Date;
-  label?: string;
   emoji?: string;
 }
 
@@ -17,14 +18,12 @@ export const PeriodCalendar = () => {
   const [value, onChange] = useState<Value>(new Date());
   const [customDates, setCustomDates] = useState<CustomDate[]>([
     {
-      date: new Date(2025, 0, 5), // Örnek tarih
-      label: "Meeting",
-      emoji: "📅",
+      date: new Date(2025, 0, 5),
+      emoji: "🩸",
     },
     {
       date: new Date(2025, 0, 10),
-      label: "Birthday",
-      emoji: "🎉",
+      emoji: "🩸",
     },
   ]);
 
@@ -35,16 +34,14 @@ export const PeriodCalendar = () => {
     );
 
     return customDate ? (
-      <div>
-        <div>{customDate.emoji}</div>
-        <div>{customDate.label}</div>
-      </div>
+      <Box sx={{ position: "absolute", top: "3px", right: "0px" }}>
+        <div className="react-calendar-emoji">{customDate.emoji}</div>
+      </Box>
     ) : null;
   };
 
   return (
-    <div>
-      <h1>Custom Calendar</h1>
+    <Stack>
       <Calendar
         onChange={onChange}
         value={value} // Burada tarih aralığını kullanıyoruz
@@ -61,6 +58,6 @@ export const PeriodCalendar = () => {
             : "No range selected"}
         </p>
       </div>
-    </div>
+    </Stack>
   );
 };

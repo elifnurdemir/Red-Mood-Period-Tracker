@@ -1,14 +1,9 @@
-import React, { useState } from "react";
-import {
-  ThemeProvider,
-  CssBaseline,
-  Switch,
-  Typography,
-  Button,
-} from "@mui/material";
+import { useState } from "react";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 import { lightTheme, darkTheme } from "./theme";
 import { Layout } from "./components/layout/Layout";
-import { PeriodCalendar } from "./components/calendar/calendar";
+import "./index.css";
+import Home from "./pages/Home";
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false); // Varsayılan light theme
 
@@ -21,7 +16,7 @@ function App() {
       <CssBaseline />
 
       <Layout isDarkMode={isDarkMode} handleThemeChange={handleThemeChange}>
-        <PeriodCalendar />
+        <Home />
       </Layout>
     </ThemeProvider>
   );

@@ -1,23 +1,26 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import { Switch } from "@mui/material";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import NavigationIcon from "@mui/icons-material/Navigation";
+import React, { useState, MouseEvent } from "react";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  Container,
+  Avatar,
+  Button,
+  Tooltip,
+  Switch,
+  Fab,
+} from "@mui/material";
+import {
+  Menu as MenuIcon,
+  Add as AddIcon,
+  Edit as EditIcon,
+  Favorite as FavoriteIcon,
+  Adb as AdbIcon,
+} from "@mui/icons-material";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -31,36 +34,25 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
   isDarkMode,
   handleThemeChange,
 }) => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  const handleOpenMenu =
+    (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) =>
+    (event: MouseEvent<HTMLElement>) =>
+      setter(event.currentTarget);
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+  const handleCloseMenu =
+    (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) => () =>
+      setter(null);
 
   return (
-    <AppBar position="relative" sx={{ marginTop: 0 }}>
+    <AppBar position="relative" sx={{ bgcolor: "#b71c1c", mt: 0 }}>
       <Container>
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
-            noWrap
             component="a"
             href="#responsive-app-bar"
             sx={{
@@ -73,62 +65,36 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
               textDecoration: "none",
             }}
           >
-            LOGO
+            RedMood
           </Typography>
-          <Box sx={{ "& > :not(style)": { m: 1 } }}>
-            <Fab color="primary" aria-label="add">
-              <AddIcon />
-            </Fab>
-            <Fab color="secondary" aria-label="edit">
-              <EditIcon />
-            </Fab>
-            <Fab variant="extended">
-              <NavigationIcon sx={{ mr: 1 }} />
-              Navigate
-            </Fab>
-            <Fab disabled aria-label="like">
-              <FavoriteIcon />
-            </Fab>
-          </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+
+          <Box sx={{ display: { xs: "flex", md: "none" }, flexGrow: 1 }}>
             <IconButton
-              size="large"
+              size="small"
               aria-label="menu"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
+              onClick={handleOpenMenu(setAnchorElNav)}
               color="inherit"
             >
               <MenuIcon />
             </IconButton>
             <Menu
-              id="menu-appbar"
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
               open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+              onClose={handleCloseMenu(setAnchorElNav)}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                <MenuItem key={page} onClick={handleCloseMenu(setAnchorElNav)}>
+                  <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
 
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
-            noWrap
             component="a"
             href="#responsive-app-bar"
             sx={{
@@ -145,48 +111,54 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
             LOGO
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}>
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                onClick={handleCloseMenu(setAnchorElNav)}
+                sx={{ color: "white" }}
               >
                 {page}
               </Button>
             ))}
           </Box>
 
-          {/* Dark Mode Switch */}
+          <Box sx={{ "& > :not(style)": { m: 1 }, display: "flex" }}>
+            <Fab size="small" color="secondary" aria-label="add">
+              <AddIcon fontSize="small" />
+            </Fab>
+            <Fab size="small" color="secondary" aria-label="edit">
+              <EditIcon fontSize="small" />
+            </Fab>
+            <Fab size="small" color="secondary" aria-label="like">
+              <FavoriteIcon fontSize="small" />
+            </Fab>
+          </Box>
+
           <Switch checked={isDarkMode} onChange={handleThemeChange} />
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton
+                onClick={handleOpenMenu(setAnchorElUser)}
+                sx={{ p: 0 }}
+              >
                 <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              onClose={handleCloseMenu(setAnchorElUser)}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    {setting}
-                  </Typography>
+                <MenuItem
+                  key={setting}
+                  onClick={handleCloseMenu(setAnchorElUser)}
+                >
+                  <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

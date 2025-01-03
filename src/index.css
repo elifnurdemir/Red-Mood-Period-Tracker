@@ -1,0 +1,21 @@
+.react-calendar {
+  width: 35vw !important;
+  border: none !important;
+}
+.react-calendar__tile {
+  position: relative;
+  aspect-ratio: 1;
+  font-size: 1em !important;
+}
+.react-calendar__tile--rangeStart {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.react-calendar__tile--rangeEnd {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+.react-calendar__tile--Active {
+  color: pink;
+}
