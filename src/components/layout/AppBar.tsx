@@ -93,24 +93,6 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
             </Menu>
           </Box>
 
-          <Typography
-            variant="h5"
-            component="a"
-            href="#responsive-app-bar"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            LOGO
-          </Typography>
-
           <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}>
             {pages.map((page) => (
               <Button

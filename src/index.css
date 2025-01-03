@@ -4,17 +4,22 @@
 }
 * {
   font-family: "RedMood" !important;
+  font-size: 20px;
 }
 .react-calendar {
-  font-family: "RedMood" !important;
   width: 35vw !important;
   border: 2px solid pink !important;
   border-radius: 30px;
+  overflow: hidden;
 }
+
 .react-calendar__tile {
   position: relative;
   aspect-ratio: 1;
   font-size: 1.5em !important;
+}
+.react-calendar__tile:enabled:hover {
+  border-radius: 20px;
 }
 .react-calendar__tile--rangeStart {
   border-top-left-radius: 20px;
@@ -25,9 +30,10 @@
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
 }
-.react-calendar__tile--Active {
-  color: pink;
-}
+
 .react-calendar-emoji {
   font-size: 16px !important;
+}
+.react-calendar__navigation__label__labelText {
+  font-size: 42px !important;
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import { format } from "date-fns";
 import "react-calendar/dist/Calendar.css";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 
 interface CustomDate {
   date: Date;
@@ -14,7 +14,8 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export const PeriodCalendar = () => {
-  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null); // Tarih aralığı
+  const theme = useTheme(); // MUI theme hook
+
   const [value, onChange] = useState<Value>(new Date());
   const [customDates, setCustomDates] = useState<CustomDate[]>([
     {
@@ -36,7 +37,7 @@ export const PeriodCalendar = () => {
   ]);
 
   // Custom günler üzerine etiket ve emoji ekleme
-  const tileContent = ({ date, view }: any) => {
+  const tileContent = ({ date }: any) => {
     const customDate = customDates.find(
       (item) => format(item.date, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
     );
@@ -62,6 +63,12 @@ export const PeriodCalendar = () => {
         tileContent={tileContent}
         selectRange={true} // Kullanıcı tarih aralığı seçebilsin
       />
+      <style>{`
+        .react-calendar__tile--active {
+          background: ${theme.palette.primary.main} !important;
+          color: white !important;
+        }
+      `}</style>
     </Stack>
   );
 };

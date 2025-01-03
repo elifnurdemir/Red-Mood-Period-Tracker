@@ -1,7 +1,6 @@
-import React from "react";
 import { PeriodCalendar } from "../components/calendar/calendar";
 import { Box, Typography, Stack } from "@mui/material";
-import { PeriodForm } from "../components/periodForm";
+import { PeriodForm } from "../components/calendar/components/periodForm";
 
 const Home = () => (
   <Stack alignItems={"center"}>
