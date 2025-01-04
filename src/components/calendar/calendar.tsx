@@ -98,11 +98,29 @@ export const PeriodCalendar = () => {
         value={value}
         tileContent={tileContent}
         selectRange={true}
+        // Takvimin arkaplan rengini theme'den al
+        tileClassName="custom-tile"
       />
       <style>{`
+        .react-calendar {
+          background: ${theme.palette.background.default} !important;
+          color: ${theme.palette.text.primary} !important; /* Metin rengini temadan al */
+        }
         .react-calendar__tile--active {
           background: ${theme.palette.primary.light} !important;
           color: white !important;
+        }
+        .custom-tile {
+          background: ${theme.palette.background.paper};
+        }
+        .react-calendar__tile {
+          color: ${theme.palette.text.primary} !important; /* Hücre yazı rengini temadan al */
+        }
+        .react-calendar__tile--now {
+          background: ${theme.palette.secondary.light} !important;
+        }
+        .react-calendar__month-view__days__day--weekend {
+          color: ${theme.palette.primary.main} !important; /* Haftasonu yazı rengi */
         }
       `}</style>
     </Stack>
