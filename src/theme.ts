@@ -5,6 +5,7 @@ export const lightTheme = createTheme({
     mode: "light",
     primary: {
       main: "#b71c1c", // Canlı kırmızı
+      light: "#f9c2c2", // pastel kırmızı
     },
     secondary: {
       main: "#f48fb1", // Pastel pembe

@@ -65,7 +65,7 @@ export const PeriodCalendar = () => {
       />
       <style>{`
         .react-calendar__tile--active {
-          background: ${theme.palette.primary.main} !important;
+          background: ${theme.palette.primary.light} !important;
           color: white !important;
         }
       `}</style>
