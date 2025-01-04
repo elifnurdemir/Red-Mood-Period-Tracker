@@ -1,6 +1,6 @@
-# Redmood
+# RedMood
 
-Redmood, kullanıcıların dönemlerini takip etmelerine yardımcı olan modern ve kullanışlı bir **Period Tracker Web Uygulaması**. Kullanıcı dostu arayüzü ve zarif tasarımı sayesinde, kullanıcıların sağlıklarını daha iyi anlamalarını ve yönetmelerini kolaylaştırır.
+Redmood, kullanıcıların regl dönemlerini takip etmelerine yardımcı olan modern ve kullanışlı bir **Period Tracker Web Uygulaması**. Kullanıcı dostu arayüzü ve zarif tasarımı sayesinde, kullanıcıların sağlıklarını daha iyi anlamalarını ve yönetmelerini kolaylaştırır.
 
 ---
 
