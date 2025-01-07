@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { parseISO } from "date-fns";
 
 export interface Period {
   duration: number; // Regl süresi (gün)
@@ -7,33 +6,31 @@ export interface Period {
 }
 
 export const usePeriods = () => {
-  const [periods, setPeriods] = useState<Period[]>(() => {
-    const savedPeriods = localStorage.getItem("periods");
-    return savedPeriods ? JSON.parse(savedPeriods) : [];
+  const [period, setPeriod] = useState<Period | null>(() => {
+    const savedPeriod = localStorage.getItem("period");
+    return savedPeriod ? JSON.parse(savedPeriod) : null;
   });
 
   useEffect(() => {
-    // localStorage'den veriyi al ve state'i güncelle
-    const savedPeriods = localStorage.getItem("periods");
-    if (savedPeriods) {
-      setPeriods(JSON.parse(savedPeriods));
+    const savedPeriod = localStorage.getItem("period");
+    if (savedPeriod) {
+      setPeriod(JSON.parse(savedPeriod));
     }
   }, []);
 
-  const addPeriod = (newPeriod: Period) => {
-    const updatedPeriods = [...periods, newPeriod];
-    setPeriods(updatedPeriods);
-    localStorage.setItem("periods", JSON.stringify(updatedPeriods));
+  const setNewPeriod = (newPeriod: Period) => {
+    setPeriod(newPeriod);
+    localStorage.setItem("period", JSON.stringify(newPeriod));
   };
 
-  const clearPeriods = () => {
-    setPeriods([]);
-    localStorage.removeItem("periods");
+  const clearPeriod = () => {
+    setPeriod(null);
+    localStorage.removeItem("period");
   };
 
   return {
-    periods,
-    addPeriod,
-    clearPeriods,
+    period,
+    setNewPeriod,
+    clearPeriod,
   };
 };

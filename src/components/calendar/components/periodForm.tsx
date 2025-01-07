@@ -13,17 +13,9 @@ import Dialog from "@mui/material/Dialog";
 import { useForm, Controller } from "react-hook-form";
 import { usePeriods, Period } from "../../../hooks/usePeriods";
 
-interface PeriodFormProps {
-  periods: Period[];
-  onPeriodsChange: (newPeriods: Period[]) => void; // Callback to parent
-}
-
-export const PeriodForm: React.FC<PeriodFormProps> = ({
-  periods,
-  onPeriodsChange,
-}) => {
+export const PeriodForm: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const { addPeriod } = usePeriods(); // Hook'tan `addPeriod` fonksiyonu
+  const { period, setNewPeriod } = usePeriods();
   const {
     register,
     handleSubmit,
@@ -33,20 +25,15 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
   } = useForm<Period>();
 
   useEffect(() => {
-    // Check if there are periods in localStorage
-    const savedPeriods = localStorage.getItem("periods");
-    if (!savedPeriods || JSON.parse(savedPeriods).length === 0) {
-      setOpen(true); // If no periods in localStorage, open the dialog
+    if (!period) {
+      setOpen(true);
     }
-  }, []);
+  }, [period]);
 
   const handleClose = () => setOpen(false);
 
-  // Update parent with the new periods after form submission
   const onSubmit = (data: Period) => {
-    addPeriod(data); // Yeni regl dönemini ekler
-    const updatedPeriods = [...periods, data]; // Update the periods array with the new period
-    onPeriodsChange(updatedPeriods); // Send the updated periods to the parent
+    setNewPeriod(data);
     reset();
     setOpen(false);
   };
@@ -72,7 +59,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
             <Controller
               name="duration"
               control={control}
-              defaultValue={5}
+              defaultValue={period?.duration || 5}
               rules={{
                 required: "Regl süresi gereklidir",
                 validate: (value) =>
@@ -101,6 +88,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
             label="Başlangıç Tarihi"
             type="date"
             fullWidth
+            defaultValue={period?.startDate || ""}
             {...register("startDate", {
               required: "Başlangıç tarihi gereklidir",
             })}
@@ -114,7 +102,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
               type="submit"
               color="primary"
               variant="contained"
-              disabled={!isDirty} // Disable the button only when the form is not dirty
+              disabled={!isDirty}
             >
               Kaydet
             </Button>
