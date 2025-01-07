@@ -9,7 +9,17 @@ import {
   parseISO,
 } from "date-fns";
 import "react-calendar/dist/Calendar.css";
-import { Box, Stack, Tooltip, useTheme } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Tooltip,
+  useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@mui/material";
 
 interface CustomDate {
   date: Date;
@@ -24,6 +34,8 @@ export const PeriodCalendar = () => {
   const theme = useTheme(); // MUI theme hook
   const [value, onChange] = useState<Value>(new Date());
   const [customDates, setCustomDates] = useState<CustomDate[]>([]);
+  const [open, setOpen] = useState(false); // Dialog visibility state
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Selected date
 
   useEffect(() => {
     const savedPeriods = localStorage.getItem("periods");
@@ -118,14 +130,114 @@ export const PeriodCalendar = () => {
     ) : null;
   };
 
+  // Handle date click
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date);
+    setOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpen(false);
+    setSelectedDate(null);
+  };
+
   return (
     <Stack>
       <Calendar
-        onChange={onChange}
+        onChange={(value) => {
+          onChange(value);
+          if (value && !Array.isArray(value)) {
+            handleDateClick(value);
+          }
+        }}
         value={value}
         tileContent={tileContent}
         tileClassName="custom-tile"
       />
+
+      <Dialog open={open} onClose={handleDialogClose}>
+        <DialogTitle>Tarih Detayları</DialogTitle>
+        <DialogContent>
+          {selectedDate && (
+            <p>Seçilen Tarih: {format(selectedDate, "dd MMMM yyyy")}</p>
+          )}
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{ marginRight: 2, marginTop: 2 }}
+          >
+            Regl Oldum
+          </Button>
+          <Button variant="outlined" color="secondary" sx={{ marginTop: 2 }}>
+            Regl Bitişi
+          </Button>
+          <Box sx={{ marginTop: 4 }}>
+            <p>Modunuzu seçin:</p>
+            <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
+              <Button
+                variant="outlined"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  padding: 2,
+                }}
+              >
+                😊
+                <span style={{ fontSize: "12px", marginTop: "4px" }}>
+                  Mutlu
+                </span>
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  padding: 2,
+                }}
+              >
+                😢
+                <span style={{ fontSize: "12px", marginTop: "4px" }}>
+                  Üzgün
+                </span>
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  padding: 2,
+                }}
+              >
+                😡
+                <span style={{ fontSize: "12px", marginTop: "4px" }}>
+                  Sinirli
+                </span>
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  padding: 2,
+                }}
+              >
+                😴
+                <span style={{ fontSize: "12px", marginTop: "4px" }}>
+                  Yorgun
+                </span>
+              </Button>
+            </Stack>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Kapat</Button>
+        </DialogActions>
+      </Dialog>
+
       <style>{`
         .react-calendar {
           background: ${theme.palette.background.default} !important;
