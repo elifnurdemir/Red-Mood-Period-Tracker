@@ -30,12 +30,13 @@ interface CustomDate {
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-interface PeriodCalendarProps {
-  periods?: Period[]; // Make periods optional
+interface LocalPeriod {
+  duration: number; // Regl süresi (gün)
+  startDate: string; // Regl başlangıç tarihi (YYYY-MM-DD)
 }
 
-export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
-  periods = [],
+export const PeriodCalendar: React.FC<{ period: LocalPeriod | null }> = ({
+  period,
 }) => {
   const [value, onChange] = useState<Value>(new Date()); // Seçilen tarih
   const [customDates, setCustomDates] = useState<CustomDate[]>([]); // Özel günler
@@ -44,93 +45,73 @@ export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
   const theme = useTheme();
 
   useEffect(() => {
-    if (periods.length === 0) return; // If periods is empty, exit early
+    if (!period) return;
 
-    const periodDuration = 5; // Regl süresi (gün olarak)
-    const cycleDuration = 28; // Döngü süresi (gün olarak)
+    const { duration, startDate } = period;
+    const cycleDuration = 28; // Regl döngüsü uzunluğu (28 gün)
+    const start = new Date(startDate);
+    const newCustomDates: CustomDate[] = [];
 
-    const newCustomDates: CustomDate[] = []; // Takvimde gösterilecek özel günler
-
-    periods.forEach((period: Period, index: number) => {
-      const startDate = new Date(period.startDate);
-
-      // İlk regl dönemi tarihlerini oluştur
-      const firstPeriodDates = eachDayOfInterval({
-        start: startDate,
-        end: addDays(startDate, periodDuration - 1),
-      });
-
-      firstPeriodDates.forEach((date) => {
-        newCustomDates.push({
-          date,
-          emoji: "🩸", // Regl dönemi simgesi
-          label: `Dönem ${index + 1}`,
-        });
-      });
-
-      // Takip eden regl dönemi ve doğurgan dönem hesaplamaları
-      for (let i = 1; i <= 12; i++) {
-        const nextCycleStart = addWeeks(startDate, i * (cycleDuration / 7));
-        const nextPeriodDates = eachDayOfInterval({
-          start: nextCycleStart,
-          end: addDays(nextCycleStart, periodDuration - 1),
-        });
-
-        nextPeriodDates.forEach((date) => {
-          newCustomDates.push({
-            date,
-            emoji: "🩸", // Regl dönemi simgesi
-            label: `Regl ${i}`,
-          });
-        });
-
-        // Yumurtlama günü ve doğurgan dönem hesaplama
-        const ovulationDay = addDays(nextCycleStart, cycleDuration - 12);
-        const fertileStart = subDays(ovulationDay, 4);
-        const fertileEnd = ovulationDay;
-
-        const fertileDates = eachDayOfInterval({
-          start: fertileStart,
-          end: fertileEnd,
-        });
-
-        newCustomDates.push({
-          date: ovulationDay,
-          emoji: "🥚", // Yumurtlama günü simgesi
-          label: `Yumurtlama Günü`,
-        });
-
-        fertileDates.forEach((date) => {
-          newCustomDates.push({
-            date,
-            emoji: "💗", // Doğurgan dönem simgesi
-            label: `Doğurgan Dönem (Ovulasyon)`,
-          });
-        });
-      }
+    // İlk regl dönemi günleri
+    const firstPeriodDays = eachDayOfInterval({
+      start,
+      end: addDays(start, duration - 1),
     });
 
-    setCustomDates(newCustomDates); // Yeni tarihleri set et
-  }, [periods]); // periods değiştiğinde tekrar hesaplanacak
-
-  const tileContent = ({ date }: any) => {
-    const customDate = customDates.find(
-      (item) => format(item.date, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
+    firstPeriodDays.forEach((date) =>
+      newCustomDates.push({ date, emoji: "🩸", label: "Regl Dönemi" })
     );
 
-    return customDate ? (
-      <Tooltip title={customDate.label}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "8px",
-            right: "0px",
-          }}
-        >
-          <div className="react-calendar-emoji">{customDate.emoji}</div>
-        </Box>
-      </Tooltip>
-    ) : null;
+    // Gelecek 12 döngüyü hesapla
+    for (let i = 1; i <= 12; i++) {
+      const nextCycleStart = addWeeks(start, i * (cycleDuration / 7));
+
+      // Gelecek regl dönemi günleri
+      const nextPeriodDays = eachDayOfInterval({
+        start: nextCycleStart,
+        end: addDays(nextCycleStart, duration - 1),
+      });
+
+      nextPeriodDays.forEach((date) =>
+        newCustomDates.push({ date, emoji: "🩸", label: "Regl Dönemi" })
+      );
+
+      // Yumurtlama ve doğurganlık dönemi
+      const ovulationDay = addDays(nextCycleStart, cycleDuration - 12);
+      const fertileStart = subDays(ovulationDay, 4);
+      const fertileEnd = ovulationDay;
+
+      const fertileDays = eachDayOfInterval({
+        start: fertileStart,
+        end: fertileEnd,
+      });
+
+      newCustomDates.push({
+        date: ovulationDay,
+        emoji: "🥚",
+        label: "Yumurtlama Günü",
+      });
+
+      fertileDays.forEach((date) =>
+        newCustomDates.push({ date, emoji: "💗", label: "Doğurgan Dönem" })
+      );
+    }
+
+    setCustomDates(newCustomDates);
+  }, [period]);
+
+  const renderTileContent = ({ date }: { date: Date }) => {
+    const customDate = customDates.find(
+      (d) => format(d.date, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
+    );
+    if (customDate) {
+      return (
+        <Tooltip title={customDate.label}>
+          <span>{customDate.emoji}</span>
+        </Tooltip>
+      );
+    }
+    return null;
   };
 
   const handleDateClick = (date: Date) => {
@@ -153,7 +134,7 @@ export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
           }
         }}
         value={value}
-        tileContent={tileContent}
+        tileContent={renderTileContent}
         tileClassName="custom-tile"
       />
 
