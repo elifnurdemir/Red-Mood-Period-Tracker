@@ -45,60 +45,82 @@ export const PeriodCalendar: React.FC<{ period: LocalPeriod | null }> = ({
   const theme = useTheme();
 
   useEffect(() => {
-    if (!period) return;
+    if (period) {
+      const newCustomDates = generateCustomDates(period);
+      setCustomDates(newCustomDates);
+    }
+  }, [period]);
 
+  const generateCustomDates = (period: LocalPeriod): CustomDate[] => {
     const { duration, startDate } = period;
     const cycleDuration = 28; // Regl döngüsü uzunluğu (28 gün)
     const start = new Date(startDate);
-    const newCustomDates: CustomDate[] = [];
+    let newCustomDates: CustomDate[] = [];
 
     // İlk regl dönemi günleri
-    const firstPeriodDays = eachDayOfInterval({
-      start,
-      end: addDays(start, duration - 1),
-    });
-
-    firstPeriodDays.forEach((date) =>
-      newCustomDates.push({ date, emoji: "🩸", label: "Regl Dönemi" })
-    );
+    newCustomDates = [
+      ...newCustomDates,
+      ...getPeriodDays(start, duration),
+      ...getOvulationAndFertilePeriod(start, cycleDuration),
+    ];
 
     // Gelecek 12 döngüyü hesapla
     for (let i = 1; i <= 12; i++) {
       const nextCycleStart = addWeeks(start, i * (cycleDuration / 7));
-
-      // Gelecek regl dönemi günleri
-      const nextPeriodDays = eachDayOfInterval({
-        start: nextCycleStart,
-        end: addDays(nextCycleStart, duration - 1),
-      });
-
-      nextPeriodDays.forEach((date) =>
-        newCustomDates.push({ date, emoji: "🩸", label: "Regl Dönemi" })
-      );
-
-      // Yumurtlama ve doğurganlık dönemi
-      const ovulationDay = addDays(nextCycleStart, cycleDuration - 12);
-      const fertileStart = subDays(ovulationDay, 4);
-      const fertileEnd = ovulationDay;
-
-      const fertileDays = eachDayOfInterval({
-        start: fertileStart,
-        end: fertileEnd,
-      });
-
-      newCustomDates.push({
-        date: ovulationDay,
-        emoji: "🥚",
-        label: "Yumurtlama Günü",
-      });
-
-      fertileDays.forEach((date) =>
-        newCustomDates.push({ date, emoji: "💗", label: "Doğurgan Dönem" })
-      );
+      newCustomDates = [
+        ...newCustomDates,
+        ...getPeriodDays(nextCycleStart, duration),
+        ...getOvulationAndFertilePeriod(nextCycleStart, cycleDuration),
+      ];
     }
 
-    setCustomDates(newCustomDates);
-  }, [period]);
+    return newCustomDates;
+  };
+
+  const getPeriodDays = (start: Date, duration: number): CustomDate[] => {
+    const periodDays = eachDayOfInterval({
+      start,
+      end: addDays(start, duration - 1),
+    });
+
+    return periodDays.map((date) => ({
+      date,
+      emoji: "🩸",
+      label: "Regl Dönemi",
+    }));
+  };
+
+  const getOvulationAndFertilePeriod = (
+    start: Date,
+    cycleDuration: number
+  ): CustomDate[] => {
+    const firstOvulationDay = addDays(start, cycleDuration - 12);
+    const firstFertileStart = subDays(firstOvulationDay, 4);
+    const firstFertileEnd = firstOvulationDay;
+
+    const fertileDays = eachDayOfInterval({
+      start: firstFertileStart,
+      end: firstFertileEnd,
+    });
+
+    let customDates: CustomDate[] = [];
+    customDates.push({
+      date: firstOvulationDay,
+      emoji: "🥚",
+      label: "Yumurtlama Günü",
+    });
+
+    customDates = [
+      ...customDates,
+      ...fertileDays.map((date) => ({
+        date,
+        emoji: "💗",
+        label: "Doğurgan Dönem",
+      })),
+    ];
+
+    return customDates;
+  };
 
   const renderTileContent = ({ date }: { date: Date }) => {
     const customDate = customDates.find(
@@ -224,7 +246,7 @@ export const PeriodCalendar: React.FC<{ period: LocalPeriod | null }> = ({
       <style>{`
         .react-calendar {
           background: ${theme.palette.background.default} !important;
-          color: ${theme.palette.text.primary} !important; /* Metin rengini temadan al */
+          color: ${theme.palette.text.primary} !important;
         }
         .react-calendar__tile--active {
           background: ${theme.palette.primary.light} !important;
@@ -234,13 +256,13 @@ export const PeriodCalendar: React.FC<{ period: LocalPeriod | null }> = ({
           background: ${theme.palette.background.paper};
         }
         .react-calendar__tile {
-          color: ${theme.palette.text.primary} !important; /* Hücre yazı rengini temadan al */
+          color: ${theme.palette.text.primary} !important;
         }
         .react-calendar__tile--now {
           background: ${theme.palette.secondary.light} !important;
         }
         .react-calendar__month-view__days__day--weekend {
-          color: ${theme.palette.primary.main} !important; /* Haftasonu yazı rengi */
+          color: ${theme.palette.primary.main} !important;
         }
       `}</style>
     </Stack>
