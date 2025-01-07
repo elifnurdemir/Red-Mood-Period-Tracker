@@ -6,10 +6,8 @@ import {
   IconButton,
   Typography,
   Menu,
-  MenuItem,
   Container,
   Avatar,
-  Button,
   Tooltip,
   Switch,
   Fab,
@@ -21,9 +19,6 @@ import {
   Favorite as FavoriteIcon,
   Adb as AdbIcon,
 } from "@mui/icons-material";
-
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 interface RedMoodAppBarProps {
   isDarkMode: boolean;
@@ -84,26 +79,10 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
               transformOrigin={{ vertical: "top", horizontal: "left" }}
               sx={{ display: { xs: "block", md: "none" } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseMenu(setAnchorElNav)}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            ></Menu>
           </Box>
 
-          <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseMenu(setAnchorElNav)}
-                sx={{ color: "white" }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
+          <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}></Box>
 
           <Box sx={{ "& > :not(style)": { m: 1 }, display: "flex" }}>
             <Fab size="small" color="secondary" aria-label="add">
@@ -134,16 +113,7 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
               onClose={handleCloseMenu(setAnchorElUser)}
               anchorOrigin={{ vertical: "top", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}
-            >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={setting}
-                  onClick={handleCloseMenu(setAnchorElUser)}
-                >
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            ></Menu>
           </Box>
         </Toolbar>
       </Container>
