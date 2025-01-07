@@ -43,80 +43,76 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
 
   return (
     <AppBar position="relative" sx={{ bgcolor: "primary", mt: 0 }}>
-      <Container>
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            component="a"
-            href="#responsive-app-bar"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
+      <Toolbar>
+        <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+        <Typography
+          variant="h6"
+          component="a"
+          href="#responsive-app-bar"
+          sx={{
+            mr: 2,
+            display: { xs: "none", md: "flex" },
+            fontFamily: "monospace",
+            fontWeight: 700,
+            letterSpacing: ".3rem",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+        >
+          RedMood
+        </Typography>
+        <Typography variant="subtitle1">Regl Takibi</Typography>
+
+        <Box sx={{ display: { xs: "flex", md: "none" }, flexGrow: 1 }}>
+          <IconButton
+            size="small"
+            aria-label="menu"
+            onClick={handleOpenMenu(setAnchorElNav)}
+            color="inherit"
           >
-            RedMood
-          </Typography>
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorElNav}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseMenu(setAnchorElNav)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            transformOrigin={{ vertical: "top", horizontal: "left" }}
+            sx={{ display: { xs: "block", md: "none" } }}
+          ></Menu>
+        </Box>
 
-          <Box sx={{ display: { xs: "flex", md: "none" }, flexGrow: 1 }}>
-            <IconButton
-              size="small"
-              aria-label="menu"
-              onClick={handleOpenMenu(setAnchorElNav)}
-              color="inherit"
-            >
-              <MenuIcon />
+        <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}></Box>
+
+        <Box sx={{ "& > :not(style)": { m: 1 }, display: "flex" }}>
+          <Fab size="small" color="secondary" aria-label="add">
+            <AddIcon fontSize="small" />
+          </Fab>
+          <Fab size="small" color="secondary" aria-label="edit">
+            <EditIcon fontSize="small" />
+          </Fab>
+          <Fab size="small" color="secondary" aria-label="like">
+            <FavoriteIcon fontSize="small" />
+          </Fab>
+        </Box>
+
+        <Switch checked={isDarkMode} onChange={handleThemeChange} />
+
+        <Box>
+          <Tooltip title="Open settings">
+            <IconButton onClick={handleOpenMenu(setAnchorElUser)} sx={{ p: 0 }}>
+              <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
             </IconButton>
-            <Menu
-              anchorEl={anchorElNav}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseMenu(setAnchorElNav)}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              transformOrigin={{ vertical: "top", horizontal: "left" }}
-              sx={{ display: { xs: "block", md: "none" } }}
-            ></Menu>
-          </Box>
-
-          <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}></Box>
-
-          <Box sx={{ "& > :not(style)": { m: 1 }, display: "flex" }}>
-            <Fab size="small" color="secondary" aria-label="add">
-              <AddIcon fontSize="small" />
-            </Fab>
-            <Fab size="small" color="secondary" aria-label="edit">
-              <EditIcon fontSize="small" />
-            </Fab>
-            <Fab size="small" color="secondary" aria-label="like">
-              <FavoriteIcon fontSize="small" />
-            </Fab>
-          </Box>
-
-          <Switch checked={isDarkMode} onChange={handleThemeChange} />
-
-          <Box>
-            <Tooltip title="Open settings">
-              <IconButton
-                onClick={handleOpenMenu(setAnchorElUser)}
-                sx={{ p: 0 }}
-              >
-                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={anchorElUser}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseMenu(setAnchorElUser)}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-            ></Menu>
-          </Box>
-        </Toolbar>
-      </Container>
+          </Tooltip>
+          <Menu
+            anchorEl={anchorElUser}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseMenu(setAnchorElUser)}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          ></Menu>
+        </Box>
+      </Toolbar>
     </AppBar>
   );
 };
