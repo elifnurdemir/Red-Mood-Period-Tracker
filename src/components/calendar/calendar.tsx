@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
-import Calendar from "react-calendar";
+import React, { useEffect, useState } from "react";
 import {
   format,
+  eachDayOfInterval,
   addDays,
   addWeeks,
-  eachDayOfInterval,
   subDays,
-  parseISO,
 } from "date-fns";
 import "react-calendar/dist/Calendar.css";
+import { Period } from "../../hooks/usePeriods"; // Assuming Period is a type that you already use for the periods
+import Calendar from "react-calendar";
 import {
   Box,
   Stack,
   Tooltip,
-  useTheme,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Button,
+  useTheme,
 } from "@mui/material";
 
 interface CustomDate {
@@ -30,85 +30,89 @@ interface CustomDate {
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-export const PeriodCalendar = () => {
-  const theme = useTheme(); // MUI theme hook
-  const [value, onChange] = useState<Value>(new Date());
-  const [customDates, setCustomDates] = useState<CustomDate[]>([]);
-  const [open, setOpen] = useState(false); // Dialog visibility state
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Selected date
+interface PeriodCalendarProps {
+  periods?: Period[]; // Make periods optional
+}
+
+export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
+  periods = [],
+}) => {
+  const [value, onChange] = useState<Value>(new Date()); // Seçilen tarih
+  const [customDates, setCustomDates] = useState<CustomDate[]>([]); // Özel günler
+  const [open, setOpen] = useState(false); // Dialog görünürlüğü
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Seçilen tarih
+  const theme = useTheme();
 
   useEffect(() => {
-    const savedPeriods = localStorage.getItem("periods");
-    const periodDuration = 5;
-    const cycleDuration = 28;
+    if (periods.length === 0) return; // If periods is empty, exit early
 
-    if (savedPeriods) {
-      const periods = JSON.parse(savedPeriods);
-      const newCustomDates: CustomDate[] = [];
+    const periodDuration = 5; // Regl süresi (gün olarak)
+    const cycleDuration = 28; // Döngü süresi (gün olarak)
 
-      periods.forEach((period: { startDate: string }, index: number) => {
-        const startDate = parseISO(period.startDate);
+    const newCustomDates: CustomDate[] = []; // Takvimde gösterilecek özel günler
 
-        const firstPeriodDates = eachDayOfInterval({
-          start: startDate,
-          end: addDays(startDate, periodDuration - 1),
-        });
+    periods.forEach((period: Period, index: number) => {
+      const startDate = new Date(period.startDate);
 
-        firstPeriodDates.forEach((date) => {
-          newCustomDates.push({
-            date,
-            emoji: "🩸",
-            label: `Dönem ${index + 1}`,
-          });
-        });
-
-        // Tahmini regl dönemlerini ve doğurgan dönemleri hesapla
-        for (let i = 1; i <= 12; i++) {
-          const nextCycleStart = addWeeks(startDate, i * (cycleDuration / 7));
-          const nextPeriodDates = eachDayOfInterval({
-            start: nextCycleStart,
-            end: addDays(nextCycleStart, periodDuration - 1),
-          });
-
-          nextPeriodDates.forEach((date) => {
-            newCustomDates.push({
-              date,
-              emoji: "🩸",
-              label: `regl`,
-            });
-          });
-
-          // Yumurtlama günü ve doğurgan dönem hesaplama
-          const ovulationDay = addDays(nextCycleStart, cycleDuration - 12);
-          const fertileStart = subDays(ovulationDay, 4);
-          const fertileEnd = ovulationDay;
-
-          const fertileDates = eachDayOfInterval({
-            start: fertileStart,
-            end: fertileEnd,
-          });
-
-          newCustomDates.push({
-            date: ovulationDay,
-            emoji: "🥚",
-            label: `Yumurtlama Günü`,
-          });
-
-          fertileDates.forEach((date) => {
-            newCustomDates.push({
-              date,
-              emoji: "💗",
-              label: `Doğurgan Dönem (ovulasyon)`,
-            });
-          });
-        }
+      // İlk regl dönemi tarihlerini oluştur
+      const firstPeriodDates = eachDayOfInterval({
+        start: startDate,
+        end: addDays(startDate, periodDuration - 1),
       });
 
-      setCustomDates(newCustomDates);
-    }
-  }, []);
+      firstPeriodDates.forEach((date) => {
+        newCustomDates.push({
+          date,
+          emoji: "🩸", // Regl dönemi simgesi
+          label: `Dönem ${index + 1}`,
+        });
+      });
 
-  // Custom günler üzerine etiket ve emoji ekleme
+      // Takip eden regl dönemi ve doğurgan dönem hesaplamaları
+      for (let i = 1; i <= 12; i++) {
+        const nextCycleStart = addWeeks(startDate, i * (cycleDuration / 7));
+        const nextPeriodDates = eachDayOfInterval({
+          start: nextCycleStart,
+          end: addDays(nextCycleStart, periodDuration - 1),
+        });
+
+        nextPeriodDates.forEach((date) => {
+          newCustomDates.push({
+            date,
+            emoji: "🩸", // Regl dönemi simgesi
+            label: `Regl ${i}`,
+          });
+        });
+
+        // Yumurtlama günü ve doğurgan dönem hesaplama
+        const ovulationDay = addDays(nextCycleStart, cycleDuration - 12);
+        const fertileStart = subDays(ovulationDay, 4);
+        const fertileEnd = ovulationDay;
+
+        const fertileDates = eachDayOfInterval({
+          start: fertileStart,
+          end: fertileEnd,
+        });
+
+        newCustomDates.push({
+          date: ovulationDay,
+          emoji: "🥚", // Yumurtlama günü simgesi
+          label: `Yumurtlama Günü`,
+        });
+
+        fertileDates.forEach((date) => {
+          newCustomDates.push({
+            date,
+            emoji: "💗", // Doğurgan dönem simgesi
+            label: `Doğurgan Dönem (Ovulasyon)`,
+          });
+        });
+      }
+    });
+
+    setCustomDates(newCustomDates); // Yeni tarihleri set et
+  }, [periods]); // periods değiştiğinde tekrar hesaplanacak
+
   const tileContent = ({ date }: any) => {
     const customDate = customDates.find(
       (item) => format(item.date, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
@@ -122,7 +126,6 @@ export const PeriodCalendar = () => {
             top: "8px",
             right: "0px",
           }}
-          aria-label={"hey"}
         >
           <div className="react-calendar-emoji">{customDate.emoji}</div>
         </Box>
@@ -130,7 +133,6 @@ export const PeriodCalendar = () => {
     ) : null;
   };
 
-  // Handle date click
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
     setOpen(true);

@@ -13,27 +13,40 @@ import Dialog from "@mui/material/Dialog";
 import { useForm, Controller } from "react-hook-form";
 import { usePeriods, Period } from "../../../hooks/usePeriods";
 
-export const PeriodForm: React.FC = () => {
+interface PeriodFormProps {
+  periods: Period[];
+  onPeriodsChange: (newPeriods: Period[]) => void; // Callback to parent
+}
+
+export const PeriodForm: React.FC<PeriodFormProps> = ({
+  periods,
+  onPeriodsChange,
+}) => {
   const [open, setOpen] = useState(false);
-  const { periods, addPeriod } = usePeriods(); // Hook'tan `addPeriod` fonksiyonu ve periodlar
+  const { addPeriod } = usePeriods(); // Hook'tan `addPeriod` fonksiyonu
   const {
     register,
     handleSubmit,
     control,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<Period>();
 
   useEffect(() => {
-    if (periods.length === 0) {
-      setOpen(true); // Eğer kayıtlı period yoksa, dialog açılır
+    // Check if there are periods in localStorage
+    const savedPeriods = localStorage.getItem("periods");
+    if (!savedPeriods || JSON.parse(savedPeriods).length === 0) {
+      setOpen(true); // If no periods in localStorage, open the dialog
     }
-  }, [periods]);
+  }, []);
 
   const handleClose = () => setOpen(false);
 
+  // Update parent with the new periods after form submission
   const onSubmit = (data: Period) => {
     addPeriod(data); // Yeni regl dönemini ekler
+    const updatedPeriods = [...periods, data]; // Update the periods array with the new period
+    onPeriodsChange(updatedPeriods); // Send the updated periods to the parent
     reset();
     setOpen(false);
   };
@@ -96,11 +109,13 @@ export const PeriodForm: React.FC = () => {
             helperText={errors.startDate?.message}
           />
 
-          <DialogActions sx={{ justifyContent: "space-between", pt: 2 }}>
-            <Button onClick={handleClose} color="primary">
-              Kapat
-            </Button>
-            <Button type="submit" color="primary" variant="contained">
+          <DialogActions>
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              disabled={!isDirty} // Disable the button only when the form is not dirty
+            >
               Kaydet
             </Button>
           </DialogActions>
