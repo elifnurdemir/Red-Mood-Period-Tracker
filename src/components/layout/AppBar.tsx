@@ -6,17 +6,11 @@ import {
   IconButton,
   Typography,
   Menu,
-  Container,
   Avatar,
   Tooltip,
   Switch,
-  Fab,
 } from "@mui/material";
 import {
-  Menu as MenuIcon,
-  Add as AddIcon,
-  Edit as EditIcon,
-  Favorite as FavoriteIcon,
   Adb as AdbIcon,
 } from "@mui/icons-material";
 
@@ -70,7 +64,6 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
             onClick={handleOpenMenu(setAnchorElNav)}
             color="inherit"
           >
-            <MenuIcon />
           </IconButton>
           <Menu
             anchorEl={anchorElNav}
@@ -83,19 +76,6 @@ export const RedMoodAppBar: React.FC<RedMoodAppBarProps> = ({
         </Box>
 
         <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}></Box>
-
-        <Box sx={{ "& > :not(style)": { m: 1 }, display: "flex" }}>
-          <Fab size="small" color="secondary" aria-label="add">
-            <AddIcon fontSize="small" />
-          </Fab>
-          <Fab size="small" color="secondary" aria-label="edit">
-            <EditIcon fontSize="small" />
-          </Fab>
-          <Fab size="small" color="secondary" aria-label="like">
-            <FavoriteIcon fontSize="small" />
-          </Fab>
-        </Box>
-
         <Switch checked={isDarkMode} onChange={handleThemeChange} />
 
         <Box>
